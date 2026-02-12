@@ -72,3 +72,14 @@ python3 scripts/stock_csv_pipeline.py --root "/Users/sam/Developer/Compound Inte
 - 產品說明（英文）：`README.md`
 - 產品說明（繁中）：`README.zh-Hant.md`
 - 技術文件：`TECHNICAL_README.md`
+
+## 授權
+
+本專案採用 MIT License，請見 `LICENSE`。
+
+## 免責聲明
+
+- 本 App 與本專案內容僅供教育與資訊用途。
+- 不構成投資建議、財務建議、稅務建議或法律建議。
+- 歷史資料與模型推估不代表未來績效保證。
+- 任何投資決策與風險均由使用者自行承擔。

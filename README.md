@@ -72,3 +72,14 @@ python3 scripts/stock_csv_pipeline.py --root "/Users/sam/Developer/Compound Inte
 - Product overview: `README.md` (this file)
 - Traditional Chinese overview: `README.zh-Hant.md`
 - Technical details: `TECHNICAL_README.md`
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.
+
+## Disclaimer
+
+- This app and repository are for educational and informational purposes only.
+- It is not investment advice, financial advice, tax advice, or legal advice.
+- Historical data and model-based projections do not guarantee future results.
+- You are solely responsible for any investment decisions and related risk.
