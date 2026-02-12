@@ -1,13 +1,8 @@
-//
-//  Compound_InterestApp.swift
-//  Compound Interest
-//
-//  Created by Sam Lai on 2026/2/2.
-//
-
 import SwiftUI
 
 @main
+/// EN: Struct definition for compound interest app.
+/// ZH: Compound_InterestApp 的 struct 定義。
 struct Compound_InterestApp: App {
     init() {
         let args = ProcessInfo.processInfo.arguments

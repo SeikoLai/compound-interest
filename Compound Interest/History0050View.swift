@@ -1,20 +1,15 @@
-//
-//  History0050View.swift
-//  Compound Interest
-//
-//  Created by Sam Lai on 2026/2/10.
-//
-
 import SwiftUI
 
+/// EN: Struct definition for daily candlestick view.
+/// ZH: DailyCandlestickView 的 struct 定義。
 private struct DailyCandlestickView: View {
-    /* EN: Session open price. ZH: 當日開盤價。 */
+    /// EN: Session open price. ZH: 當日開盤價。
     let open: Double
-    /* EN: Session high price. ZH: 當日最高價。 */
+    /// EN: Session high price. ZH: 當日最高價。
     let high: Double
-    /* EN: Session low price. ZH: 當日最低價。 */
+    /// EN: Session low price. ZH: 當日最低價。
     let low: Double
-    /* EN: Session close price. ZH: 當日收盤價。 */
+    /// EN: Session close price. ZH: 當日收盤價。
     let close: Double
 
     private var isUp: Bool { close > open }
@@ -61,24 +56,28 @@ private struct DailyCandlestickView: View {
     }
 }
 
+/// EN: Struct definition for stock history record.
+/// ZH: StockHistoryRecord 的 struct 定義。
 struct StockHistoryRecord: Identifiable, Decodable {
-    /* EN: Stable identifier for list rendering. ZH: 清單渲染用識別值。 */
+    /// EN: Stable identifier for list rendering. ZH: 清單渲染用識別值。
     let id = UUID()
-    /* EN: Trading date in YYYY/MM/DD. ZH: 交易日期（YYYY/MM/DD）。 */
+    /// EN: Trading date in YYYY/MM/DD. ZH: 交易日期（YYYY/MM/DD）。
     let date: String
-    /* EN: Open price. ZH: 開盤價。 */
+    /// EN: Open price. ZH: 開盤價。
     let open: Double
-    /* EN: High price. ZH: 最高價。 */
+    /// EN: High price. ZH: 最高價。
     let high: Double
-    /* EN: Low price. ZH: 最低價。 */
+    /// EN: Low price. ZH: 最低價。
     let low: Double
-    /* EN: Close price. ZH: 收盤價。 */
+    /// EN: Close price. ZH: 收盤價。
     let close: Double
-    /* EN: Adjusted close from source. ZH: 來源提供的調整收盤價。 */
+    /// EN: Adjusted close from source. ZH: 來源提供的調整收盤價。
     let adjust_close: Double
-    /* EN: Trading volume. ZH: 成交量。 */
+    /// EN: Trading volume. ZH: 成交量。
     let volume: Double
 
+    /// EN: Enum definition for coding keys.
+    /// ZH: CodingKeys 的 enum 定義。
     private enum CodingKeys: String, CodingKey {
         case date
         case open
@@ -90,154 +89,174 @@ struct StockHistoryRecord: Identifiable, Decodable {
     }
 }
 
+/// EN: Struct definition for stock history response.
+/// ZH: StockHistoryResponse 的 struct 定義。
 struct StockHistoryResponse: Decodable {
-    /* EN: Daily records. ZH: 每日資料。 */
+    /// EN: Daily records. ZH: 每日資料。
     let records: [StockHistoryRecord]
-    /* EN: Optional annual summaries. ZH: 可選年度摘要。 */
+    /// EN: Optional annual summaries. ZH: 可選年度摘要。
     let annual_summaries: [StockAnnualSummary]?
-    /* EN: Optional monthly summaries. ZH: 可選月度摘要。 */
+    /// EN: Optional monthly summaries. ZH: 可選月度摘要。
     let monthly_summaries: [StockMonthlySummary]?
 }
 
+/// EN: Struct definition for stock annual summary.
+/// ZH: StockAnnualSummary 的 struct 定義。
 struct StockAnnualSummary: Decodable {
-    /* EN: Year label. ZH: 年份。 */
+    /// EN: Year label. ZH: 年份。
     let year: String
-    /* EN: Annual volume. ZH: 年度成交量。 */
+    /// EN: Annual volume. ZH: 年度成交量。
     let volume: Double
-    /* EN: Annual amount. ZH: 年度成交金額。 */
+    /// EN: Annual amount. ZH: 年度成交金額。
     let amount: Double
-    /* EN: Annual trades count. ZH: 年度成交筆數。 */
+    /// EN: Annual trades count. ZH: 年度成交筆數。
     let trades: Double
-    /* EN: Annual high price. ZH: 年度最高價。 */
+    /// EN: Annual high price. ZH: 年度最高價。
     let high: Double
-    /* EN: Date of annual high. ZH: 年度最高價日期。 */
+    /// EN: Date of annual high. ZH: 年度最高價日期。
     let high_date: String
-    /* EN: Annual low price. ZH: 年度最低價。 */
+    /// EN: Annual low price. ZH: 年度最低價。
     let low: Double
-    /* EN: Date of annual low. ZH: 年度最低價日期。 */
+    /// EN: Date of annual low. ZH: 年度最低價日期。
     let low_date: String
-    /* EN: Annual average close. ZH: 年度平均收盤價。 */
+    /// EN: Annual average close. ZH: 年度平均收盤價。
     let average_close: Double
 }
 
+/// EN: Struct definition for stock monthly summary.
+/// ZH: StockMonthlySummary 的 struct 定義。
 struct StockMonthlySummary: Decodable {
-    /* EN: Year label. ZH: 年份。 */
+    /// EN: Year label. ZH: 年份。
     let year: String
-    /* EN: Month label. ZH: 月份。 */
+    /// EN: Month label. ZH: 月份。
     let month: String
-    /* EN: Monthly high. ZH: 月最高價。 */
+    /// EN: Monthly high. ZH: 月最高價。
     let high: Double
-    /* EN: Monthly low. ZH: 月最低價。 */
+    /// EN: Monthly low. ZH: 月最低價。
     let low: Double
-    /* EN: Monthly weighted average price. ZH: 月加權平均價。 */
+    /// EN: Monthly weighted average price. ZH: 月加權平均價。
     let weighted_average: Double
-    /* EN: Monthly trades count. ZH: 月成交筆數。 */
+    /// EN: Monthly trades count. ZH: 月成交筆數。
     let trades: Double
-    /* EN: Monthly amount. ZH: 月成交金額。 */
+    /// EN: Monthly amount. ZH: 月成交金額。
     let amount: Double
-    /* EN: Monthly volume. ZH: 月成交量。 */
+    /// EN: Monthly volume. ZH: 月成交量。
     let volume: Double
-    /* EN: Monthly turnover rate. ZH: 月週轉率。 */
+    /// EN: Monthly turnover rate. ZH: 月週轉率。
     let turnover_rate: Double
 }
 
+/// EN: Struct definition for stock history month group.
+/// ZH: StockHistoryMonthGroup 的 struct 定義。
 struct StockHistoryMonthGroup: Identifiable {
-    /* EN: Unique month group id. ZH: 月分群唯一識別值。 */
+    /// EN: Unique month group id. ZH: 月分群唯一識別值。
     let id: String
-    /* EN: Month key. ZH: 月份鍵值。 */
+    /// EN: Month key. ZH: 月份鍵值。
     let month: String
-    /* EN: Daily rows in this month. ZH: 本月每日資料。 */
+    /// EN: Daily rows in this month. ZH: 本月每日資料。
     let records: [StockHistoryRecord]
 }
 
+/// EN: Struct definition for stock history year group.
+/// ZH: StockHistoryYearGroup 的 struct 定義。
 struct StockHistoryYearGroup: Identifiable {
-    /* EN: Unique year group id. ZH: 年分群唯一識別值。 */
+    /// EN: Unique year group id. ZH: 年分群唯一識別值。
     let id: String
-    /* EN: Year key. ZH: 年份鍵值。 */
+    /// EN: Year key. ZH: 年份鍵值。
     let year: String
-    /* EN: Month groups under this year. ZH: 該年度底下的月份分群。 */
+    /// EN: Month groups under this year. ZH: 該年度底下的月份分群。
     let months: [StockHistoryMonthGroup]
     var recordsCount: Int {
         return months.reduce(into: 0) { $0 += $1.records.count }
     }
 }
 
+/// EN: Struct definition for stock history list view.
+/// ZH: StockHistoryListView 的 struct 定義。
 struct StockHistoryListView: View {
-    /* EN: Source JSON file name. ZH: 資料來源 JSON 檔名。 */
+    /// EN: Source JSON file name. ZH: 資料來源 JSON 檔名。
     let jsonFileName: String
-    /* EN: Navigation title localization key. ZH: 導覽標題語系 key。 */
+    /// EN: Navigation title localization key. ZH: 導覽標題語系 key。
     let titleKey: String
-    /* EN: External search keyword. ZH: 外部傳入搜尋關鍵字。 */
+    /// EN: External search keyword. ZH: 外部傳入搜尋關鍵字。
     var searchText: String = ""
-    /* EN: Whether to show navigation title/toolbars. ZH: 是否顯示導覽列與工具列。 */
+    /// EN: Whether to show navigation title/toolbars. ZH: 是否顯示導覽列與工具列。
     var showNavigationUI: Bool = true
 
-    /* EN: Loaded daily records. ZH: 載入後的每日資料。 */
+    /// EN: Loaded daily records. ZH: 載入後的每日資料。
     @State private var records: [StockHistoryRecord] = []
-    /* EN: Annual summary lookup by year. ZH: 以年份索引的年度摘要。 */
+    /// EN: Annual summary lookup by year. ZH: 以年份索引的年度摘要。
     @State private var annualSummariesByYear: [String: StockAnnualSummary] = [:]
-    /* EN: Monthly summary lookup by year-month. ZH: 以年月索引的月度摘要。 */
+    /// EN: Monthly summary lookup by year-month. ZH: 以年月索引的月度摘要。
     @State private var monthlySummariesByYearMonth: [String: StockMonthlySummary] = [:]
-    /* EN: Load error text for UI. ZH: 載入錯誤訊息。 */
+    /// EN: Load error text for UI. ZH: 載入錯誤訊息。
     @State private var loadError: String?
-    /* EN: Expanded year sections. ZH: 已展開的年度集合。 */
+    /// EN: Expanded year sections. ZH: 已展開的年度集合。
     @State private var expandedYears: Set<String> = []
-    /* EN: Expanded month sections. ZH: 已展開的月份集合。 */
+    /// EN: Expanded month sections. ZH: 已展開的月份集合。
     @State private var expandedMonths: Set<String> = []
-    /* EN: Persisted app language key. ZH: App 語系儲存鍵值。 */
+    /// EN: Persisted app language key. ZH: App 語系儲存鍵值。
     @AppStorage("appLanguage") private var appLanguage: String = "en"
-    /* EN: Current color scheme. ZH: 目前深淺色模式。 */
+    /// EN: Current color scheme. ZH: 目前深淺色模式。
     @Environment(\.colorScheme) private var colorScheme
     
+    /// EN: Struct definition for annual summary display.
+    /// ZH: AnnualSummaryDisplay 的 struct 定義。
     private struct AnnualSummaryDisplay {
-        /* EN: First trading price used as annual open proxy. ZH: 年度開盤代理值（首筆交易價）。 */
+        /// EN: First trading price used as annual open proxy. ZH: 年度開盤代理值（首筆交易價）。
         let open: Double
-        /* EN: Last trading close used as annual close proxy. ZH: 年度收盤代理值（末筆交易價）。 */
+        /// EN: Last trading close used as annual close proxy. ZH: 年度收盤代理值（末筆交易價）。
         let close: Double
-        /* EN: Annual high price. ZH: 年度最高價。 */
+        /// EN: Annual high price. ZH: 年度最高價。
         let high: Double
-        /* EN: Annual low price. ZH: 年度最低價。 */
+        /// EN: Annual low price. ZH: 年度最低價。
         let low: Double
-        /* EN: Annual average close. ZH: 年度平均收盤價。 */
+        /// EN: Annual average close. ZH: 年度平均收盤價。
         let averageClose: Double
-        /* EN: Date text for annual high. ZH: 年高點日期文字。 */
+        /// EN: Date text for annual high. ZH: 年高點日期文字。
         let highDate: String
-        /* EN: Date text for annual low. ZH: 年低點日期文字。 */
+        /// EN: Date text for annual low. ZH: 年低點日期文字。
         let lowDate: String
-        /* EN: Annual volume summary. ZH: 年度成交量摘要。 */
+        /// EN: Annual volume summary. ZH: 年度成交量摘要。
         let volume: Double
     }
 
+    /// EN: Struct definition for monthly summary display.
+    /// ZH: MonthlySummaryDisplay 的 struct 定義。
     private struct MonthlySummaryDisplay {
-        /* EN: First trading price used as monthly open proxy. ZH: 月開盤代理值（首筆交易價）。 */
+        /// EN: First trading price used as monthly open proxy. ZH: 月開盤代理值（首筆交易價）。
         let open: Double
-        /* EN: Last trading close used as monthly close proxy. ZH: 月收盤代理值（末筆交易價）。 */
+        /// EN: Last trading close used as monthly close proxy. ZH: 月收盤代理值（末筆交易價）。
         let close: Double
-        /* EN: Monthly high price. ZH: 月最高價。 */
+        /// EN: Monthly high price. ZH: 月最高價。
         let high: Double
-        /* EN: Monthly low price. ZH: 月最低價。 */
+        /// EN: Monthly low price. ZH: 月最低價。
         let low: Double
-        /* EN: Monthly weighted average price. ZH: 月加權平均價。 */
+        /// EN: Monthly weighted average price. ZH: 月加權平均價。
         let weightedAverage: Double
-        /* EN: Monthly volume summary. ZH: 月成交量摘要。 */
+        /// EN: Monthly volume summary. ZH: 月成交量摘要。
         let volume: Double
-        /* EN: Monthly turnover text (if available). ZH: 月週轉率文字（若有資料）。 */
+        /// EN: Monthly turnover text (if available). ZH: 月週轉率文字（若有資料）。
         let turnoverText: String?
     }
 
-    /* EN: Candlestick size for annual summary rows (100%). ZH: 年度 K 線尺寸（100%）。 */
+    /// EN: Candlestick size for annual summary rows (100%). ZH: 年度 K 線尺寸（100%）。
     private let annualCandleSize = CGSize(width: 26, height: 54)
-    /* EN: Candlestick size for monthly summary rows (80%). ZH: 月度 K 線尺寸（80%）。 */
+    /// EN: Candlestick size for monthly summary rows (80%). ZH: 月度 K 線尺寸（80%）。
     private let monthlyCandleSize = CGSize(width: 20.8, height: 43.2)
-    /* EN: Candlestick size for daily rows (70%). ZH: 每日 K 線尺寸（70%）。 */
+    /// EN: Candlestick size for daily rows (70%). ZH: 每日 K 線尺寸（70%）。
     private let dailyCandleSize = CGSize(width: 18.2, height: 37.8)
-    /* EN: Left indentation for year cards. ZH: 年度卡片左縮排。 */
+    /// EN: Left indentation for year cards. ZH: 年度卡片左縮排。
     private let yearIndent: CGFloat = 2
-    /* EN: Left indentation for month cards. ZH: 月度卡片左縮排。 */
+    /// EN: Left indentation for month cards. ZH: 月度卡片左縮排。
     private let monthIndent: CGFloat = 10
-    /* EN: Left indentation for daily rows. ZH: 每日列左縮排。 */
+    /// EN: Left indentation for daily rows. ZH: 每日列左縮排。
     private let dayIndent: CGFloat = 18
 
+    /// EN: Returns a localized string for the current in-app language.
+    /// ZH: 依目前 App 內語系回傳在地化字串。
+    /// - Parameter key: EN: `key` (String). ZH: 參數 `key`（String）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func localized(_ key: String) -> String {
         guard
             let path = Bundle.main.path(forResource: appLanguage, ofType: "lproj"),
@@ -248,6 +267,11 @@ struct StockHistoryListView: View {
         return NSLocalizedString(key, bundle: bundle, comment: "")
     }
 
+    /// EN: Formats a localized template string with runtime arguments.
+    /// ZH: 使用執行期參數格式化在地化模板字串。
+    /// - Parameter key: EN: `key` (String). ZH: 參數 `key`（String）。
+    /// - Parameter args: EN: `args` (CVarArg...). ZH: 參數 `args`（CVarArg...）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func localizedFormat(_ key: String, _ args: CVarArg...) -> String {
         let format = localized(key)
         return String(format: format, locale: Locale(identifier: appLanguage), arguments: args)
@@ -271,10 +295,8 @@ struct StockHistoryListView: View {
     }
 
     private var groupedByYear: [StockHistoryYearGroup] {
-        /*
-         EN: Merge daily-data years with summary-only years so annual/monthly cards can still be shown.
-         ZH: 合併「每日資料年份」與「僅摘要年份」，確保年/月摘要仍可呈現。
-         */
+/// EN: Merge daily-data years with summary-only years so annual/monthly cards can still be shown.
+/// ZH: 合併「每日資料年份」與「僅摘要年份」，確保年/月摘要仍可呈現。
         let dailyYearGroups = Dictionary(grouping: filteredRecords) { String($0.date.prefix(4)) }
         let summaryYears = Set(annualSummariesByYear.keys).union(
             monthlySummariesByYearMonth.keys.compactMap { String($0.split(separator: "-").first ?? "") }
@@ -308,31 +330,51 @@ struct StockHistoryListView: View {
     }
 
     private var indexYears: [String] {
-        /*
-         EN: Right-side index only shows years that contain daily rows.
-         ZH: 右側索引僅顯示有「每日資料」的年份。
-         */
+/// EN: Right-side index only shows years that contain daily rows.
+/// ZH: 右側索引僅顯示有「每日資料」的年份。
         groupedByYear
             .filter { $0.recordsCount > 0 }
             .map(\.year)
     }
 
+    /// EN: Builds a canonical year-month key used by monthly summary lookup.
+    /// ZH: 建立月度摘要查找使用的標準年月鍵值。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Parameter month: EN: `month` (String). ZH: 參數 `month`（String）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func monthKey(year: String, month: String) -> String {
         "\(year)-\(month)"
     }
 
+    /// EN: Builds a stable scroll anchor identifier for a year section.
+    /// ZH: 建立年份區塊用的穩定捲動錨點識別值。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func yearAnchorId(_ year: String) -> String {
         "year-anchor-\(year)"
     }
 
+    /// EN: Looks up annual summary data for a given year.
+    /// ZH: 查找指定年份的年度摘要資料。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Returns: EN: `StockAnnualSummary?` result. ZH: 回傳 `StockAnnualSummary?` 結果。
     private func annualSummary(for year: String) -> StockAnnualSummary? {
         annualSummariesByYear[year]
     }
 
+    /// EN: Looks up monthly summary data by year and month.
+    /// ZH: 依年份與月份查找月度摘要資料。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Parameter month: EN: `month` (String). ZH: 參數 `month`（String）。
+    /// - Returns: EN: `StockMonthlySummary?` result. ZH: 回傳 `StockMonthlySummary?` 結果。
     private func monthlySummary(year: String, month: String) -> StockMonthlySummary? {
         monthlySummariesByYearMonth[monthKey(year: year, month: month)]
     }
 
+    /// EN: Converts YYYY/MM/DD text into MM/DD display text.
+    /// ZH: 將 YYYY/MM/DD 文字轉換為 MM/DD 顯示格式。
+    /// - Parameter date: EN: `date` (String). ZH: 參數 `date`（String）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func monthDayText(from date: String) -> String {
         let parts = date.split(separator: "/")
         guard parts.count == 3 else { return "--/--" }
@@ -341,6 +383,10 @@ struct StockHistoryListView: View {
         return "\(month)/\(String(format: "%02d", day))"
     }
 
+    /// EN: Builds annual summary display data from summary or daily fallback.
+    /// ZH: 由年度摘要或每日資料備援建立年度顯示資料。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Returns: EN: `AnnualSummaryDisplay?` result. ZH: 回傳 `AnnualSummaryDisplay?` 結果。
     private func annualSummaryDisplay(for year: String) -> AnnualSummaryDisplay? {
         let yearPrefix = "\(year)/"
         let yearRecords = records.filter { $0.date.hasPrefix(yearPrefix) }
@@ -386,6 +432,11 @@ struct StockHistoryListView: View {
         )
     }
 
+    /// EN: Builds monthly summary display data from summary or daily fallback.
+    /// ZH: 由月度摘要或每日資料備援建立月度顯示資料。
+    /// - Parameter year: EN: `year` (String). ZH: 參數 `year`（String）。
+    /// - Parameter month: EN: `month` (String). ZH: 參數 `month`（String）。
+    /// - Returns: EN: `MonthlySummaryDisplay?` result. ZH: 回傳 `MonthlySummaryDisplay?` 結果。
     private func monthlySummaryDisplay(year: String, month: String) -> MonthlySummaryDisplay? {
         let monthPrefix = "\(year)/\(month)/"
         let monthRecords = records.filter { $0.date.hasPrefix(monthPrefix) }
@@ -429,6 +480,8 @@ struct StockHistoryListView: View {
         )
     }
 
+    /// EN: Initializes default expanded/collapsed state for year and month sections.
+    /// ZH: 初始化年與月區塊的預設展開/收合狀態。
     private func initializeExpansionState() {
         expandedYears = Set(groupedByYear.map { $0.year })
         expandedMonths = []
@@ -729,6 +782,8 @@ struct StockHistoryListView: View {
         .onAppear(perform: load)
     }
 
+    /// EN: Loads and decodes stock history JSON into grouped view state.
+    /// ZH: 載入並解碼股票歷史 JSON，建立分群後的畫面狀態。
     private func load() {
         guard let url = Bundle.main.url(forResource: jsonFileName, withExtension: "json") else {
             loadError = localized("history_missing")
@@ -749,11 +804,17 @@ struct StockHistoryListView: View {
     }
 }
 
+/// EN: Struct definition for stock history navigation modifier.
+/// ZH: StockHistoryNavigationModifier 的 struct 定義。
 private struct StockHistoryNavigationModifier: ViewModifier {
     let showNavigationUI: Bool
     let titleKey: String
     @AppStorage("appLanguage") private var appLanguage: String = "en"
 
+    /// EN: Returns a localized string for the current in-app language.
+    /// ZH: 依目前 App 內語系回傳在地化字串。
+    /// - Parameter key: EN: `key` (String). ZH: 參數 `key`（String）。
+    /// - Returns: EN: `String` result. ZH: 回傳 `String` 結果。
     private func localized(_ key: String) -> String {
         guard
             let path = Bundle.main.path(forResource: appLanguage, ofType: "lproj"),
@@ -764,6 +825,10 @@ private struct StockHistoryNavigationModifier: ViewModifier {
         return NSLocalizedString(key, bundle: bundle, comment: "")
     }
 
+    /// EN: Builds modified content with stock-history navigation chrome.
+    /// ZH: 建立含股票歷史導覽外觀的修飾後內容。
+    /// - Parameter content: EN: `content` (Content). ZH: 參數 `content`（Content）。
+    /// - Returns: EN: `some View` result. ZH: 回傳 `some View` 結果。
     func body(content: Content) -> some View {
         if showNavigationUI {
             content
@@ -784,6 +849,8 @@ private struct StockHistoryNavigationModifier: ViewModifier {
     }
 }
 
+/// EN: Struct definition for history0050 view.
+/// ZH: History0050View 的 struct 定義。
 struct History0050View: View {
     var searchText: String = ""
     var showNavigationUI: Bool = true
@@ -798,6 +865,8 @@ struct History0050View: View {
     }
 }
 
+/// EN: Struct definition for history2330 view.
+/// ZH: History2330View 的 struct 定義。
 struct History2330View: View {
     var searchText: String = ""
     var showNavigationUI: Bool = true
