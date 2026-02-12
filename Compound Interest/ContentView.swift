@@ -29,6 +29,11 @@ private struct StockGrowthModel {
     let annualGrowthRate: Double
 }
 
+private struct StockSplitEvent {
+    let effectiveDate: String  // YYYY/MM/DD
+    let splitRatio: Double     // e.g. 4.0 means 1 -> 4
+}
+
 struct Record: Identifiable {
     let id: UUID = UUID()
     var year: Int
@@ -123,7 +128,7 @@ struct ContentView: View {
     }
 
     private var isKeyboardVisible: Bool {
-        keyboardTopY < UIScreen.main.bounds.height
+        keyboardTopY.isFinite && keyboardTopY < .greatestFiniteMagnitude
     }
 
     private func defaultFabPosition(in proxy: GeometryProxy) -> CGPoint {
@@ -218,6 +223,31 @@ struct ContentView: View {
         return base + (terminalGrowth - base) * progress
     }
 
+    private func splitEvents(for jsonName: String) -> [StockSplitEvent] {
+        if jsonName == "0050_history" {
+            return [
+                StockSplitEvent(effectiveDate: "2025/06/18", splitRatio: 4.0)
+            ]
+        }
+        return []
+    }
+
+    private func adjustedClose(jsonName: String, tradeDate: String, close: Double) -> Double {
+        guard close > 0 else { return close }
+        let events = splitEvents(for: jsonName)
+        guard !events.isEmpty else { return close }
+
+        var adjusted = close
+        for event in events {
+            guard event.splitRatio > 0 else { continue }
+            // Convert pre-split prices into post-split per-share basis.
+            if tradeDate < event.effectiveDate {
+                adjusted /= event.splitRatio
+            }
+        }
+        return adjusted
+    }
+
     private func loadGrowthModel(from jsonName: String, lookbackYears: Int) -> StockGrowthModel? {
         guard let url = Bundle.main.url(forResource: jsonName, withExtension: "json") else { return nil }
         guard
@@ -225,10 +255,11 @@ struct ContentView: View {
             let response = try? JSONDecoder().decode(StockHistoryLiteResponse.self, from: data)
         else { return nil }
 
-        // Use adjusted close first to avoid distortions from splits/corporate actions.
+        // Use adjusted close first, then normalize split history to one per-share basis.
         let normalized: [StockHistoryLiteRecord] = response.records.map { row in
-            let adjusted = (row.adjust_close ?? row.close) > 0 ? (row.adjust_close ?? row.close) : row.close
-            return StockHistoryLiteRecord(date: row.date, close: adjusted, adjust_close: row.adjust_close)
+            let baseClose = (row.adjust_close ?? row.close) > 0 ? (row.adjust_close ?? row.close) : row.close
+            let splitAdjusted = adjustedClose(jsonName: jsonName, tradeDate: row.date, close: baseClose)
+            return StockHistoryLiteRecord(date: row.date, close: splitAdjusted, adjust_close: row.adjust_close)
         }
 
         let sorted = normalized.sorted { $0.date < $1.date }
@@ -237,63 +268,45 @@ struct ContentView: View {
         let latestYear = Int(latest.date.prefix(4)) ?? 0
         let targetYear = latestYear - max(1, lookbackYears)
 
-        var rawGrowth: Double?
-        if let annual = response.annual_summaries {
-            let annualMap = Dictionary(uniqueKeysWithValues: annual.compactMap { item -> (Int, Double)? in
-                guard let y = Int(item.year), item.average_close > 0 else { return nil }
-                return (y, item.average_close)
-            })
-            if
-                let latestAnnualYear = annualMap.keys.max(),
-                let latestAnnualPrice = annualMap[latestAnnualYear], latestAnnualPrice > 0
-            {
-                let annualTarget = latestAnnualYear - max(1, lookbackYears)
-                let baseAnnualYear = annualMap.keys.filter { $0 >= annualTarget }.min() ?? annualMap.keys.min()
-                if let baseAnnualYear, let baseAnnualPrice = annualMap[baseAnnualYear], baseAnnualPrice > 0 {
-                    let yearsSpan = max(1, latestAnnualYear - baseAnnualYear)
-                    rawGrowth = pow(latestAnnualPrice / baseAnnualPrice, 1.0 / Double(yearsSpan)) - 1.0
-                }
-            }
-        }
+        let baseRecord = sorted.first { (Int($0.date.prefix(4)) ?? 0) >= targetYear } ?? sorted.first
+        guard let baseRecord, baseRecord.close > 0 else { return nil }
+        let baseYear = Int(baseRecord.date.prefix(4)) ?? targetYear
+        let yearsSpan = max(1, latestYear - baseYear)
+        let rawGrowth = pow(latest.close / baseRecord.close, 1.0 / Double(yearsSpan)) - 1.0
 
-        if rawGrowth == nil {
-            let baseRecord = sorted.first { (Int($0.date.prefix(4)) ?? 0) >= targetYear } ?? sorted.first
-            guard let baseRecord, baseRecord.close > 0 else { return nil }
-            let baseYear = Int(baseRecord.date.prefix(4)) ?? targetYear
-            let yearsSpan = max(1, latestYear - baseYear)
-            rawGrowth = pow(latest.close / baseRecord.close, 1.0 / Double(yearsSpan)) - 1.0
-        }
-
-        let growth = min(max(rawGrowth ?? 0, -0.05), 0.12)
+        let growth = min(max(rawGrowth, -0.05), 0.12)
 
         return StockGrowthModel(latestPrice: latest.close, annualGrowthRate: growth)
     }
 
     private func stockProjectionColumn(symbol: String, totalShares: Double, deltaShares: Double, estimatedPrice: Double) -> some View {
-        let sharesLine =
-            Text(
-                localizedFormat(
-                    "record_stock_shares_single_base",
-                    totalShares.formatted(.number.precision(.fractionLength(0)))
-                )
-            ) +
-            Text(
-                localizedFormat(
-                    "record_stock_shares_delta",
-                    deltaShares.formatted(.number.precision(.fractionLength(0)))
-                )
-            )
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(.secondary)
+        let sharesBase = localizedFormat(
+            "record_stock_shares_single_base",
+            totalShares.formatted(.number.precision(.fractionLength(0)))
+        )
+        let sharesDelta = localizedFormat(
+            "record_stock_shares_delta",
+            deltaShares.formatted(.number.precision(.fractionLength(0)))
+        )
 
         return VStack(alignment: .leading, spacing: 2) {
             Text(symbol)
                 .font(.headline.weight(.bold))
-            sharesLine
-                .font(.title3.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .allowsTightening(true)
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text(sharesBase)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .layoutPriority(2)
+                Text(sharesDelta)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .layoutPriority(1)
+            }
+            .allowsTightening(true)
             Text(
                 localizedFormat(
                     "record_stock_price_single_format",

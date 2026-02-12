@@ -231,6 +231,12 @@ struct StockHistoryListView: View {
         }
     }
 
+    private var indexYears: [String] {
+        groupedByYear
+            .filter { $0.recordsCount > 0 }
+            .map(\.year)
+    }
+
     private func monthKey(year: String, month: String) -> String {
         "\(year)-\(month)"
     }
@@ -382,32 +388,30 @@ struct StockHistoryListView: View {
                                                 summary.averageClose.formatted(.number.precision(.fractionLength(2)))
                                             )
                                         )
-                                        (
+                                        HStack(spacing: 4) {
                                             Text(
                                                 localizedFormat(
                                                     "history_annual_high_price",
                                                     summary.high.formatted(.number.precision(.fractionLength(2)))
                                                 )
-                                            ) +
-                                            Text(" ") +
+                                            )
                                             Text(localizedFormat("history_date_suffix", summary.highDate))
                                                 .font(.subheadline.weight(.semibold))
                                                 .foregroundStyle(.secondary)
-                                        )
+                                        }
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                                        (
+                                        HStack(spacing: 4) {
                                             Text(
                                                 localizedFormat(
                                                     "history_annual_low_price",
                                                     summary.low.formatted(.number.precision(.fractionLength(2)))
                                                 )
-                                            ) +
-                                            Text(" ") +
+                                            )
                                             Text(localizedFormat("history_date_suffix", summary.lowDate))
                                                 .font(.subheadline.weight(.semibold))
                                                 .foregroundStyle(.secondary)
-                                        )
+                                        }
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
                                         Text(
@@ -624,7 +628,7 @@ struct StockHistoryListView: View {
             .listStyle(.grouped)
             .overlay(alignment: .trailing) {
                 VStack(spacing: 6) {
-                    ForEach(groupedByYear.map { $0.year }, id: \.self) { year in
+                    ForEach(indexYears, id: \.self) { year in
                         Text(year)
                             .font(.caption2)
                             .foregroundStyle(.secondary)
