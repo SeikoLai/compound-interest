@@ -8,9 +8,13 @@
 import SwiftUI
 
 private struct DailyCandlestickView: View {
+    /* EN: Session open price. ZH: 當日開盤價。 */
     let open: Double
+    /* EN: Session high price. ZH: 當日最高價。 */
     let high: Double
+    /* EN: Session low price. ZH: 當日最低價。 */
     let low: Double
+    /* EN: Session close price. ZH: 當日收盤價。 */
     let close: Double
 
     private var isUp: Bool { close > open }
@@ -58,13 +62,21 @@ private struct DailyCandlestickView: View {
 }
 
 struct StockHistoryRecord: Identifiable, Decodable {
+    /* EN: Stable identifier for list rendering. ZH: 清單渲染用識別值。 */
     let id = UUID()
+    /* EN: Trading date in YYYY/MM/DD. ZH: 交易日期（YYYY/MM/DD）。 */
     let date: String
+    /* EN: Open price. ZH: 開盤價。 */
     let open: Double
+    /* EN: High price. ZH: 最高價。 */
     let high: Double
+    /* EN: Low price. ZH: 最低價。 */
     let low: Double
+    /* EN: Close price. ZH: 收盤價。 */
     let close: Double
+    /* EN: Adjusted close from source. ZH: 來源提供的調整收盤價。 */
     let adjust_close: Double
+    /* EN: Trading volume. ZH: 成交量。 */
     let volume: Double
 
     private enum CodingKeys: String, CodingKey {
@@ -79,44 +91,71 @@ struct StockHistoryRecord: Identifiable, Decodable {
 }
 
 struct StockHistoryResponse: Decodable {
+    /* EN: Daily records. ZH: 每日資料。 */
     let records: [StockHistoryRecord]
+    /* EN: Optional annual summaries. ZH: 可選年度摘要。 */
     let annual_summaries: [StockAnnualSummary]?
+    /* EN: Optional monthly summaries. ZH: 可選月度摘要。 */
     let monthly_summaries: [StockMonthlySummary]?
 }
 
 struct StockAnnualSummary: Decodable {
+    /* EN: Year label. ZH: 年份。 */
     let year: String
+    /* EN: Annual volume. ZH: 年度成交量。 */
     let volume: Double
+    /* EN: Annual amount. ZH: 年度成交金額。 */
     let amount: Double
+    /* EN: Annual trades count. ZH: 年度成交筆數。 */
     let trades: Double
+    /* EN: Annual high price. ZH: 年度最高價。 */
     let high: Double
+    /* EN: Date of annual high. ZH: 年度最高價日期。 */
     let high_date: String
+    /* EN: Annual low price. ZH: 年度最低價。 */
     let low: Double
+    /* EN: Date of annual low. ZH: 年度最低價日期。 */
     let low_date: String
+    /* EN: Annual average close. ZH: 年度平均收盤價。 */
     let average_close: Double
 }
 
 struct StockMonthlySummary: Decodable {
+    /* EN: Year label. ZH: 年份。 */
     let year: String
+    /* EN: Month label. ZH: 月份。 */
     let month: String
+    /* EN: Monthly high. ZH: 月最高價。 */
     let high: Double
+    /* EN: Monthly low. ZH: 月最低價。 */
     let low: Double
+    /* EN: Monthly weighted average price. ZH: 月加權平均價。 */
     let weighted_average: Double
+    /* EN: Monthly trades count. ZH: 月成交筆數。 */
     let trades: Double
+    /* EN: Monthly amount. ZH: 月成交金額。 */
     let amount: Double
+    /* EN: Monthly volume. ZH: 月成交量。 */
     let volume: Double
+    /* EN: Monthly turnover rate. ZH: 月週轉率。 */
     let turnover_rate: Double
 }
 
 struct StockHistoryMonthGroup: Identifiable {
+    /* EN: Unique month group id. ZH: 月分群唯一識別值。 */
     let id: String
+    /* EN: Month key. ZH: 月份鍵值。 */
     let month: String
+    /* EN: Daily rows in this month. ZH: 本月每日資料。 */
     let records: [StockHistoryRecord]
 }
 
 struct StockHistoryYearGroup: Identifiable {
+    /* EN: Unique year group id. ZH: 年分群唯一識別值。 */
     let id: String
+    /* EN: Year key. ZH: 年份鍵值。 */
     let year: String
+    /* EN: Month groups under this year. ZH: 該年度底下的月份分群。 */
     let months: [StockHistoryMonthGroup]
     var recordsCount: Int {
         return months.reduce(into: 0) { $0 += $1.records.count }
@@ -124,46 +163,79 @@ struct StockHistoryYearGroup: Identifiable {
 }
 
 struct StockHistoryListView: View {
+    /* EN: Source JSON file name. ZH: 資料來源 JSON 檔名。 */
     let jsonFileName: String
+    /* EN: Navigation title localization key. ZH: 導覽標題語系 key。 */
     let titleKey: String
+    /* EN: External search keyword. ZH: 外部傳入搜尋關鍵字。 */
     var searchText: String = ""
+    /* EN: Whether to show navigation title/toolbars. ZH: 是否顯示導覽列與工具列。 */
     var showNavigationUI: Bool = true
 
+    /* EN: Loaded daily records. ZH: 載入後的每日資料。 */
     @State private var records: [StockHistoryRecord] = []
+    /* EN: Annual summary lookup by year. ZH: 以年份索引的年度摘要。 */
     @State private var annualSummariesByYear: [String: StockAnnualSummary] = [:]
+    /* EN: Monthly summary lookup by year-month. ZH: 以年月索引的月度摘要。 */
     @State private var monthlySummariesByYearMonth: [String: StockMonthlySummary] = [:]
+    /* EN: Load error text for UI. ZH: 載入錯誤訊息。 */
     @State private var loadError: String?
+    /* EN: Expanded year sections. ZH: 已展開的年度集合。 */
     @State private var expandedYears: Set<String> = []
+    /* EN: Expanded month sections. ZH: 已展開的月份集合。 */
     @State private var expandedMonths: Set<String> = []
+    /* EN: Persisted app language key. ZH: App 語系儲存鍵值。 */
     @AppStorage("appLanguage") private var appLanguage: String = "en"
+    /* EN: Current color scheme. ZH: 目前深淺色模式。 */
     @Environment(\.colorScheme) private var colorScheme
     
     private struct AnnualSummaryDisplay {
+        /* EN: First trading price used as annual open proxy. ZH: 年度開盤代理值（首筆交易價）。 */
         let open: Double
+        /* EN: Last trading close used as annual close proxy. ZH: 年度收盤代理值（末筆交易價）。 */
         let close: Double
+        /* EN: Annual high price. ZH: 年度最高價。 */
         let high: Double
+        /* EN: Annual low price. ZH: 年度最低價。 */
         let low: Double
+        /* EN: Annual average close. ZH: 年度平均收盤價。 */
         let averageClose: Double
+        /* EN: Date text for annual high. ZH: 年高點日期文字。 */
         let highDate: String
+        /* EN: Date text for annual low. ZH: 年低點日期文字。 */
         let lowDate: String
+        /* EN: Annual volume summary. ZH: 年度成交量摘要。 */
         let volume: Double
     }
 
     private struct MonthlySummaryDisplay {
+        /* EN: First trading price used as monthly open proxy. ZH: 月開盤代理值（首筆交易價）。 */
         let open: Double
+        /* EN: Last trading close used as monthly close proxy. ZH: 月收盤代理值（末筆交易價）。 */
         let close: Double
+        /* EN: Monthly high price. ZH: 月最高價。 */
         let high: Double
+        /* EN: Monthly low price. ZH: 月最低價。 */
         let low: Double
+        /* EN: Monthly weighted average price. ZH: 月加權平均價。 */
         let weightedAverage: Double
+        /* EN: Monthly volume summary. ZH: 月成交量摘要。 */
         let volume: Double
+        /* EN: Monthly turnover text (if available). ZH: 月週轉率文字（若有資料）。 */
         let turnoverText: String?
     }
 
-    private let annualCandleSize = CGSize(width: 26, height: 54)   // 100%
-    private let monthlyCandleSize = CGSize(width: 20.8, height: 43.2) // 80%
-    private let dailyCandleSize = CGSize(width: 18.2, height: 37.8) // 70%
+    /* EN: Candlestick size for annual summary rows (100%). ZH: 年度 K 線尺寸（100%）。 */
+    private let annualCandleSize = CGSize(width: 26, height: 54)
+    /* EN: Candlestick size for monthly summary rows (80%). ZH: 月度 K 線尺寸（80%）。 */
+    private let monthlyCandleSize = CGSize(width: 20.8, height: 43.2)
+    /* EN: Candlestick size for daily rows (70%). ZH: 每日 K 線尺寸（70%）。 */
+    private let dailyCandleSize = CGSize(width: 18.2, height: 37.8)
+    /* EN: Left indentation for year cards. ZH: 年度卡片左縮排。 */
     private let yearIndent: CGFloat = 2
+    /* EN: Left indentation for month cards. ZH: 月度卡片左縮排。 */
     private let monthIndent: CGFloat = 10
+    /* EN: Left indentation for daily rows. ZH: 每日列左縮排。 */
     private let dayIndent: CGFloat = 18
 
     private func localized(_ key: String) -> String {
@@ -199,6 +271,10 @@ struct StockHistoryListView: View {
     }
 
     private var groupedByYear: [StockHistoryYearGroup] {
+        /*
+         EN: Merge daily-data years with summary-only years so annual/monthly cards can still be shown.
+         ZH: 合併「每日資料年份」與「僅摘要年份」，確保年/月摘要仍可呈現。
+         */
         let dailyYearGroups = Dictionary(grouping: filteredRecords) { String($0.date.prefix(4)) }
         let summaryYears = Set(annualSummariesByYear.keys).union(
             monthlySummariesByYearMonth.keys.compactMap { String($0.split(separator: "-").first ?? "") }
@@ -232,6 +308,10 @@ struct StockHistoryListView: View {
     }
 
     private var indexYears: [String] {
+        /*
+         EN: Right-side index only shows years that contain daily rows.
+         ZH: 右側索引僅顯示有「每日資料」的年份。
+         */
         groupedByYear
             .filter { $0.recordsCount > 0 }
             .map(\.year)

@@ -7,22 +7,30 @@ import SwiftUI
 import UIKit
 
 private struct StockTrendLiteRecord: Decodable {
+    /* EN: Trading date in YYYY/MM/DD. ZH: 交易日期（YYYY/MM/DD）。 */
     let date: String
+    /* EN: Close price from source. ZH: 來源收盤價。 */
     let close: Double
+    /* EN: Adjusted close if available. ZH: 若有提供則為調整收盤價。 */
     let adjust_close: Double?
 }
 
 private struct StockTrendLiteAnnual: Decodable {
+    /* EN: Summary year. ZH: 摘要年份。 */
     let year: String
+    /* EN: Annual average close. ZH: 年度平均收盤價。 */
     let average_close: Double
 }
 
 private struct StockTrendLiteResponse: Decodable {
+    /* EN: Daily trend records. ZH: 日資料走勢紀錄。 */
     let records: [StockTrendLiteRecord]
+    /* EN: Optional annual summaries. ZH: 可選年度摘要。 */
     let annual_summaries: [StockTrendLiteAnnual]?
 }
 
 private struct PickerBottomPreferenceKey: PreferenceKey {
+    /* EN: Default picker bottom position. ZH: Picker 底部預設座標。 */
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
@@ -30,13 +38,16 @@ private struct PickerBottomPreferenceKey: PreferenceKey {
 }
 
 private struct YearTrendBar: Identifiable {
+    /* EN: Stable identifier for chart drawing. ZH: 圖表繪製用識別值。 */
     let id: Int
+    /* EN: Normalized value used for bar height. ZH: 用於柱高計算的數值。 */
     let value: Double
-    // 1 = up (red), -1 = down (green), 0 = flat (gray)
+    /* EN: 1=up, -1=down, 0=flat. ZH: 1=上漲、-1=下跌、0=平盤。 */
     let direction: Int
 }
 
 private struct TopBarTrendBackground: View {
+    /* EN: Yearly bars to render in top background. ZH: 頂部背景要繪製的年度柱狀資料。 */
     let bars: [YearTrendBar]
 
     var body: some View {
@@ -92,15 +103,23 @@ struct StockHistoryView: View {
         case s0050 = "0050"
         case s2330 = "2330"
 
+        /* EN: Stable ID for segmented picker tags. ZH: segmented picker 用穩定識別值。 */
         var id: String { rawValue }
     }
 
+    /* EN: Current selected stock symbol. ZH: 目前選取的股票代號。 */
     @State private var selectedStock: StockSymbol = .s0050
+    /* EN: Search text for stock list filtering. ZH: 股票列表搜尋文字。 */
     @State private var searchText: String = ""
+    /* EN: Info popover visibility state. ZH: 資訊提示視窗顯示狀態。 */
     @State private var showInfoPopover: Bool = false
+    /* EN: 0050 top trend bar cache. ZH: 0050 頂部走勢柱狀資料快取。 */
     @State private var trend0050: [YearTrendBar] = []
+    /* EN: 2330 top trend bar cache. ZH: 2330 頂部走勢柱狀資料快取。 */
     @State private var trend2330: [YearTrendBar] = []
+    /* EN: Picker bottom Y in global coordinate space. ZH: Picker 底部全域座標 Y 值。 */
     @State private var pickerBottomGlobalY: CGFloat = 0
+    /* EN: Persisted app language key. ZH: App 語系儲存鍵值。 */
     @AppStorage("appLanguage") private var appLanguage: String = "en"
 
     private func localized(_ key: String) -> String {
@@ -221,8 +240,15 @@ struct StockHistoryView: View {
             GeometryReader { geo in
                 let topPanelHeight = geo.safeAreaInsets.top + 44
                 let fallbackLowerHeight: CGFloat = 188
-                // Extend through segmented control height so chart reaches picker bottom edge.
+                /*
+                 EN: Bridge height extends background to segmented control lower edge.
+                 ZH: 透過補償高度讓背景延伸到 segmented control 下緣。
+                 */
                 let segmentedBridgeHeight: CGFloat = 40
+                /*
+                 EN: Convert picker bottom from global space back to local view space.
+                 ZH: 將 picker 底部座標由全域座標轉回目前容器的本地座標。
+                 */
                 let lowerMaskStart = pickerBottomGlobalY > 1
                     ? max(0, pickerBottomGlobalY - geo.frame(in: .global).minY + segmentedBridgeHeight)
                     : fallbackLowerHeight

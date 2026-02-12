@@ -9,40 +9,96 @@ import SwiftUI
 import UIKit
 
 private struct StockHistoryLiteRecord: Decodable {
+    /*
+     EN: Trading date in YYYY/MM/DD.
+     ZH: 交易日期（YYYY/MM/DD）。
+     */
     let date: String
+    /*
+     EN: Close price from source data.
+     ZH: 來源資料的收盤價。
+     */
     let close: Double
+    /*
+     EN: Exchange-adjusted close if provided.
+     ZH: 若有提供，使用交易所調整後收盤價。
+     */
     let adjust_close: Double?
 }
 
 private struct StockAnnualSummaryLite: Decodable {
+    /*
+     EN: Summary year.
+     ZH: 年度摘要年份。
+     */
     let year: String
+    /*
+     EN: Annual average close from source summary.
+     ZH: 來源摘要提供的年度平均收盤價。
+     */
     let average_close: Double
 }
 
 private struct StockHistoryLiteResponse: Decodable {
+    /*
+     EN: Daily records used for growth estimation.
+     ZH: 用於估算成長率的日資料。
+     */
     let records: [StockHistoryLiteRecord]
+    /*
+     EN: Optional annual summaries from source.
+     ZH: 來源可選的年度摘要資料。
+     */
     let annual_summaries: [StockAnnualSummaryLite]?
 }
 
 private struct StockGrowthModel {
+    /*
+     EN: Latest normalized price as projection start point.
+     ZH: 經正規化後的最新股價，作為預估起點。
+     */
     let latestPrice: Double
+    /*
+     EN: Annualized growth used by projection loop.
+     ZH: 用於預估迴圈的年化成長率。
+     */
     let annualGrowthRate: Double
 }
 
 private struct StockSplitEvent {
+    /*
+     EN: Split effective date in YYYY/MM/DD.
+     ZH: 股票分割生效日（YYYY/MM/DD）。
+     */
     let effectiveDate: String  // YYYY/MM/DD
+    /*
+     EN: Split ratio; 4.0 means 1 old share becomes 4 new shares.
+     ZH: 分割比率；4.0 代表 1 股拆成 4 股。
+     */
     let splitRatio: Double     // e.g. 4.0 means 1 -> 4
 }
 
 struct Record: Identifiable {
+    /*
+     EN: Stable identity for SwiftUI list diffing.
+     ZH: SwiftUI 清單更新用的穩定識別值。
+     */
     let id: UUID = UUID()
+    /* EN: Projection year index (1-based). ZH: 預估年份（從 1 開始）。 */
     var year: Int
+    /* EN: Annual contribution amount. ZH: 每年投入金額。 */
     var payment: Double
+    /* EN: Principal at beginning of year. ZH: 年初本金。 */
     var principalStart: Double
+    /* EN: Interest earned in current year. ZH: 當年利息。 */
     var interestEarned: Double
+    /* EN: Contribution booked this year. ZH: 當年投入。 */
     var contribution: Double
+    /* EN: End-of-year total value. ZH: 年底總額。 */
     var totalEnd: Double
+    /* EN: Cumulative invested capital by this year. ZH: 截至當年累積投入本金。 */
     var investedToDate: Double
+    /* EN: Growth multiple vs invested capital. ZH: 相對累積投入的成長倍數。 */
     var times: Double { investedToDate > 0 ? (totalEnd / investedToDate) : 0 }
 }
 
@@ -57,32 +113,58 @@ struct ContentView: View {
         case annualContribution
     }
 
+    /* EN: Initial principal input. ZH: 初始本金輸入值。 */
     @State var capital: Int = 60000
+    /* EN: Toggle for annual fixed contribution. ZH: 是否啟用每年固定投入。 */
     @State var paymentsEnabled: Bool = true
+    /* EN: Annual contribution input. ZH: 每年固定投入金額。 */
     @State var payment: Int = 120000
+    /* EN: Projection horizon in years. ZH: 預估年數。 */
     @State var year: Int = 20
+    /* EN: Compound interest rate for cash model. ZH: 現金複利模型年利率。 */
     @State var interest = 0.1
+    /* EN: Persisted app language key. ZH: App 語系儲存鍵值。 */
     @AppStorage("appLanguage") private var appLanguage: String = "en"
+    /* EN: Controls input panel visibility. ZH: 控制輸入面板顯示。 */
     @State private var showInputAlert: Bool = false
+    /* EN: FAB tap animation rotation. ZH: 懸浮按鈕點擊旋轉角度。 */
     @State private var keyboardRotation: Double = 0
+    /* EN: Current FAB center position. ZH: 懸浮按鈕目前中心座標。 */
     @State private var fabPosition: CGPoint = .zero
+    /* EN: FAB drag start anchor. ZH: 懸浮按鈕拖曳起始座標。 */
     @State private var fabStartPosition: CGPoint = .zero
+    /* EN: One-time FAB initial positioning flag. ZH: 懸浮按鈕是否已完成初始定位。 */
     @State private var fabInitialized: Bool = false
+    /* EN: FAB dragging state. ZH: 懸浮按鈕拖曳中狀態。 */
     @State private var isDraggingFab: Bool = false
+    /* EN: Current selected tab. ZH: 目前選取分頁。 */
     @State private var selectedTab: Tab = .compound
+    /* EN: Keyboard top Y in global coordinates. ZH: 鍵盤頂部的全域 Y 座標。 */
     @State private var keyboardTopY: CGFloat = .greatestFiniteMagnitude
+    /* EN: Principal text field binding. ZH: 本金輸入框字串。 */
     @State private var principalText: String = "0"
+    /* EN: Annual contribution text field binding. ZH: 每年投入輸入框字串。 */
     @State private var paymentText: String = "120000"
+    /* EN: Focus target for input fields. ZH: 輸入框焦點控制。 */
     @FocusState private var focusedField: InputField?
+    /* EN: Growth model cache for 0050. ZH: 0050 成長模型快取。 */
     @State private var growthModel0050: StockGrowthModel?
+    /* EN: Growth model cache for 2330. ZH: 2330 成長模型快取。 */
     @State private var growthModel2330: StockGrowthModel?
+    /* EN: Lookback window for CAGR estimation. ZH: CAGR 回朔區間年數。 */
     @State private var growthLookbackYears: Int = 5
+    /* EN: Expanded years for projection panel. ZH: 展開股票預估區塊的年份集合。 */
     @State private var expandedProjectionYears: Set<Int> = []
+    /* EN: Current color scheme for theming. ZH: 目前深淺色模式。 */
     @Environment(\.colorScheme) private var colorScheme
 
+    /* EN: Floating action button diameter. ZH: 懸浮按鈕直徑。 */
     private let fabSize: CGFloat = 56
+    /* EN: Minimum edge margin for FAB movement. ZH: 懸浮按鈕與邊界最小距離。 */
     private let fabMargin: CGFloat = 12
+    /* EN: Default FAB center offset above safe-bottom/tab area. ZH: 預設懸浮按鈕位於 tab 區上方的中心偏移。 */
     private let tabBarRowCenterFromSafeBottom: CGFloat = 54
+    /* EN: Gap between keyboard top and locked FAB. ZH: 鍵盤頂部與懸浮按鈕鎖定位置的間距。 */
     private let keyboardGap: CGFloat = 10
 
     private func localized(_ key: String) -> String {
@@ -152,7 +234,10 @@ struct ContentView: View {
         for yearIndex in 0..<totalYears {
             let principalStart = principal
 
-            // Annuity Due: payment at beginning of each year, then annual compounding once.
+            /*
+             EN: Annuity Due model: contribute at the beginning of each year, then compound once per year.
+             ZH: 期初年金模型：每年年初先投入，再做一次年複利計算。
+             */
             principal += paymentAmount
             let interestEarned = principal * interest
             principal += interestEarned
@@ -191,6 +276,10 @@ struct ContentView: View {
         var price2330 = model2330.latestPrice
 
         for index in 1...totalYears {
+            /*
+             EN: Estimate next year's price by compounding model growth.
+             ZH: 使用模型年成長率推估下一年度股價。
+             */
             let growth0050 = effectiveGrowthRate(base: model0050.annualGrowthRate, projectionYear: index)
             let growth2330 = effectiveGrowthRate(base: model2330.annualGrowthRate, projectionYear: index)
             price0050 *= (1 + growth0050)
@@ -199,11 +288,23 @@ struct ContentView: View {
 
             let investAmount: Double
             if index == 1 {
+                /*
+                 EN: Year 1 buys with principal + optional annual contribution.
+                 ZH: 第一年用「本金 + (可選)當年固定投入」進行買入。
+                 */
                 investAmount = Double(capital) + (paymentsEnabled ? Double(payment) : 0)
             } else {
+                /*
+                 EN: From year 2 onward, buy only by annual contribution when enabled.
+                 ZH: 第二年起僅以每年固定投入買入（若開關啟用）。
+                 */
                 investAmount = paymentsEnabled ? Double(payment) : 0
             }
 
+            /*
+             EN: Fractional shares are allowed; accumulated shares carry over year by year.
+             ZH: 允許零股，並將持股逐年累加。
+             */
             let yearBought0050 = investAmount / price0050
             let yearBought2330 = investAmount / price2330
             shares0050 += yearBought0050
@@ -217,6 +318,10 @@ struct ContentView: View {
         if projectionYear <= 10 {
             return base
         }
+        /*
+         EN: Fade to a long-run terminal growth to avoid unrealistically explosive projections.
+         ZH: 第 10 年後逐步收斂到長期終端成長率，避免不合理的爆炸式預估。
+         */
         let terminalGrowth = 0.04
         let span = 10.0
         let progress = min(max((Double(projectionYear) - 10.0) / span, 0), 1)
@@ -226,6 +331,10 @@ struct ContentView: View {
     private func splitEvents(for jsonName: String) -> [StockSplitEvent] {
         if jsonName == "0050_history" {
             return [
+                /*
+                 EN: 0050 stock split 1 -> 4, effective from 2025/06/18.
+                 ZH: 0050 於 2025/06/18 起進行 1 拆 4。
+                 */
                 StockSplitEvent(effectiveDate: "2025/06/18", splitRatio: 4.0)
             ]
         }
@@ -240,7 +349,10 @@ struct ContentView: View {
         var adjusted = close
         for event in events {
             guard event.splitRatio > 0 else { continue }
-            // Convert pre-split prices into post-split per-share basis.
+            /*
+             EN: Convert pre-split prices into a post-split per-share basis for apples-to-apples CAGR.
+             ZH: 將分割前價格換算到分割後每股基準，確保 CAGR 可同基準比較。
+             */
             if tradeDate < event.effectiveDate {
                 adjusted /= event.splitRatio
             }
@@ -255,7 +367,10 @@ struct ContentView: View {
             let response = try? JSONDecoder().decode(StockHistoryLiteResponse.self, from: data)
         else { return nil }
 
-        // Use adjusted close first, then normalize split history to one per-share basis.
+        /*
+         EN: Prefer adjusted close; then apply split normalization for a consistent valuation basis.
+         ZH: 優先使用調整收盤價，再套用分割正規化，統一估值基準。
+         */
         let normalized: [StockHistoryLiteRecord] = response.records.map { row in
             let baseClose = (row.adjust_close ?? row.close) > 0 ? (row.adjust_close ?? row.close) : row.close
             let splitAdjusted = adjustedClose(jsonName: jsonName, tradeDate: row.date, close: baseClose)
@@ -272,8 +387,16 @@ struct ContentView: View {
         guard let baseRecord, baseRecord.close > 0 else { return nil }
         let baseYear = Int(baseRecord.date.prefix(4)) ?? targetYear
         let yearsSpan = max(1, latestYear - baseYear)
+        /*
+         EN: CAGR formula = (latest/base)^(1/years) - 1.
+         ZH: 年化成長率公式：CAGR = (期末/期初)^(1/年數) - 1。
+         */
         let rawGrowth = pow(latest.close / baseRecord.close, 1.0 / Double(yearsSpan)) - 1.0
 
+        /*
+         EN: Clamp to a conservative interval for projection stability in UI.
+         ZH: 將成長率限制在保守區間，避免 UI 預估值過度震盪。
+         */
         let growth = min(max(rawGrowth, -0.05), 0.12)
 
         return StockGrowthModel(latestPrice: latest.close, annualGrowthRate: growth)
