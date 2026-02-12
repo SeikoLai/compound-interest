@@ -238,9 +238,13 @@ struct ContentView: View {
              EN: Annuity Due model: contribute at the beginning of each year, then compound once per year.
              ZH: 期初年金模型：每年年初先投入，再做一次年複利計算。
              */
-            principal += paymentAmount
-            let interestEarned = principal * interest
-            principal += interestEarned
+            let step = FinanceMath.annuityDueYearStep(
+                principalStart: principalStart,
+                payment: paymentAmount,
+                interestRate: interest
+            )
+            let interestEarned = step.interestEarned
+            principal = step.totalEnd
 
             let totalEnd = principal
             let contribution = paymentAmount
@@ -324,7 +328,7 @@ struct ContentView: View {
          */
         let terminalGrowth = 0.04
         let span = 10.0
-        let progress = min(max((Double(projectionYear) - 10.0) / span, 0), 1)
+        let progress = FinanceMath.clamp((Double(projectionYear) - 10.0) / span, min: 0, max: 1)
         return base + (terminalGrowth - base) * progress
     }
 
@@ -353,9 +357,11 @@ struct ContentView: View {
              EN: Convert pre-split prices into a post-split per-share basis for apples-to-apples CAGR.
              ZH: 將分割前價格換算到分割後每股基準，確保 CAGR 可同基準比較。
              */
-            if tradeDate < event.effectiveDate {
-                adjusted /= event.splitRatio
-            }
+            adjusted = FinanceMath.adjustedClose(
+                close: adjusted,
+                tradeDate: tradeDate,
+                splitEvents: [(event.effectiveDate, event.splitRatio)]
+            )
         }
         return adjusted
     }
@@ -391,13 +397,17 @@ struct ContentView: View {
          EN: CAGR formula = (latest/base)^(1/years) - 1.
          ZH: 年化成長率公式：CAGR = (期末/期初)^(1/年數) - 1。
          */
-        let rawGrowth = pow(latest.close / baseRecord.close, 1.0 / Double(yearsSpan)) - 1.0
+        let rawGrowth = FinanceMath.cagr(
+            latest: latest.close,
+            base: baseRecord.close,
+            years: yearsSpan
+        )
 
         /*
          EN: Clamp to a conservative interval for projection stability in UI.
          ZH: 將成長率限制在保守區間，避免 UI 預估值過度震盪。
          */
-        let growth = min(max(rawGrowth, -0.05), 0.12)
+        let growth = FinanceMath.clamp(rawGrowth, min: -0.05, max: 0.12)
 
         return StockGrowthModel(latestPrice: latest.close, annualGrowthRate: growth)
     }
@@ -604,6 +614,7 @@ struct ContentView: View {
                                 .multilineTextAlignment(.trailing)
                                 .font(.system(size: 17, weight: .bold, design: .monospaced))
                                 .focused($focusedField, equals: .principal)
+                                .accessibilityIdentifier("compound.input.principal")
                             .frame(maxWidth: .infinity)
                             .frame(height: 36)
                         }
@@ -628,6 +639,7 @@ struct ContentView: View {
                                 .multilineTextAlignment(.trailing)
                                 .font(.system(size: 17, weight: .bold, design: .monospaced))
                                 .focused($focusedField, equals: .annualContribution)
+                                .accessibilityIdentifier("compound.input.annual")
                             .frame(maxWidth: .infinity)
                             .frame(height: 36)
                         }
@@ -646,6 +658,8 @@ struct ContentView: View {
                     .frame(maxWidth: 360)
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .padding(.horizontal, 20)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("compound.input.panel")
                 }
 
                 if selectedTab == .compound {
@@ -659,6 +673,10 @@ struct ContentView: View {
                         )
                         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
                         .rotationEffect(.degrees(keyboardRotation))
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(Text("input panel toggle"))
+                        .accessibilityIdentifier("compound.fab.keyboard")
+                        .accessibilityAddTraits(.isButton)
                         .position(fabPosition)
                         .gesture(
                             DragGesture(minimumDistance: 0)

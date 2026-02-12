@@ -275,6 +275,7 @@ struct StockHistoryView: View {
                     Text(localized("stock_segment_2330")).tag(StockSymbol.s2330)
                 }
                 .pickerStyle(.segmented)
+                .accessibilityIdentifier("stock.segment")
                 .padding([.horizontal, .top])
                 .background(
                     GeometryReader { geo in

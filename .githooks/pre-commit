@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+echo "[pre-commit] Running refactor guardrail checks..."
+"$ROOT_DIR/scripts/pre_refactor_check.sh"

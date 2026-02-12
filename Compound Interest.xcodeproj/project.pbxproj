@@ -6,8 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		A10000112F40000100AAA001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22AAA2B92F30805200FBA804 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22AAA2C02F30805200FBA804;
+			remoteInfo = "Compound Interest";
+		};
+		A10000122F40000100AAA001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22AAA2B92F30805200FBA804 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22AAA2C02F30805200FBA804;
+			remoteInfo = "Compound Interest";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		22AAA2C12F30805200FBA804 /* Compound Interest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Compound Interest.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000012F40000100AAA001 /* Compound InterestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Compound InterestTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000022F40000100AAA001 /* Compound InterestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Compound InterestUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +35,34 @@
 			path = "Compound Interest";
 			sourceTree = "<group>";
 		};
+		A10000032F40000100AAA001 /* Compound InterestTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Compound InterestTests";
+			sourceTree = "<group>";
+		};
+		A10000042F40000100AAA001 /* Compound InterestUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Compound InterestUITests";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		22AAA2BE2F30805200FBA804 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000072F40000100AAA001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A100000E2F40000100AAA001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				22AAA2C32F30805200FBA804 /* Compound Interest */,
+				A10000032F40000100AAA001 /* Compound InterestTests */,
+				A10000042F40000100AAA001 /* Compound InterestUITests */,
 				22AAA2C22F30805200FBA804 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				22AAA2C12F30805200FBA804 /* Compound Interest.app */,
+				A10000012F40000100AAA001 /* Compound InterestTests.xctest */,
+				A10000022F40000100AAA001 /* Compound InterestUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +117,52 @@
 			productReference = 22AAA2C12F30805200FBA804 /* Compound Interest.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A10000062F40000100AAA001 /* Compound InterestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10000192F40000100AAA001 /* Build configuration list for PBXNativeTarget "Compound InterestTests" */;
+			buildPhases = (
+				A10000052F40000100AAA001 /* Sources */,
+				A10000072F40000100AAA001 /* Frameworks */,
+				A10000082F40000100AAA001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A10000132F40000100AAA001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A10000032F40000100AAA001 /* Compound InterestTests */,
+			);
+			name = "Compound InterestTests";
+			packageProductDependencies = (
+			);
+			productName = "Compound InterestTests";
+			productReference = A10000012F40000100AAA001 /* Compound InterestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A100000D2F40000100AAA001 /* Compound InterestUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A100001A2F40000100AAA001 /* Build configuration list for PBXNativeTarget "Compound InterestUITests" */;
+			buildPhases = (
+				A100000C2F40000100AAA001 /* Sources */,
+				A100000E2F40000100AAA001 /* Frameworks */,
+				A100000F2F40000100AAA001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A10000142F40000100AAA001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A10000042F40000100AAA001 /* Compound InterestUITests */,
+			);
+			name = "Compound InterestUITests";
+			packageProductDependencies = (
+			);
+			productName = "Compound InterestUITests";
+			productReference = A10000022F40000100AAA001 /* Compound InterestUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +175,14 @@
 				TargetAttributes = {
 					22AAA2C02F30805200FBA804 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					A10000062F40000100AAA001 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 22AAA2C02F30805200FBA804;
+					};
+					A100000D2F40000100AAA001 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 22AAA2C02F30805200FBA804;
 					};
 				};
 			};
@@ -101,12 +202,28 @@
 			projectRoot = "";
 			targets = (
 				22AAA2C02F30805200FBA804 /* Compound Interest */,
+				A10000062F40000100AAA001 /* Compound InterestTests */,
+				A100000D2F40000100AAA001 /* Compound InterestUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		22AAA2BF2F30805200FBA804 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A10000082F40000100AAA001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A100000F2F40000100AAA001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -123,7 +240,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10000052F40000100AAA001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A100000C2F40000100AAA001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000132F40000100AAA001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22AAA2C02F30805200FBA804 /* Compound Interest */;
+			targetProxy = A10000112F40000100AAA001 /* PBXContainerItemProxy */;
+		};
+		A10000142F40000100AAA001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22AAA2C02F30805200FBA804 /* Compound Interest */;
+			targetProxy = A10000122F40000100AAA001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		22AAA2CA2F30805300FBA804 /* Debug */ = {
@@ -313,6 +457,88 @@
 			};
 			name = Release;
 		};
+		A10000152F40000100AAA001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QK4J8T2NS;
+				ENABLE_PREVIEWS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ssl.Compound-InterestTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Compound Interest.app/Compound Interest";
+			};
+			name = Debug;
+		};
+		A10000162F40000100AAA001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QK4J8T2NS;
+				ENABLE_PREVIEWS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ssl.Compound-InterestTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Compound Interest.app/Compound Interest";
+			};
+			name = Release;
+		};
+		A10000172F40000100AAA001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QK4J8T2NS;
+				ENABLE_PREVIEWS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ssl.Compound-InterestUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Compound Interest";
+			};
+			name = Debug;
+		};
+		A10000182F40000100AAA001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2QK4J8T2NS;
+				ENABLE_PREVIEWS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ssl.Compound-InterestUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Compound Interest";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -330,6 +556,24 @@
 			buildConfigurations = (
 				22AAA2CD2F30805300FBA804 /* Debug */,
 				22AAA2CE2F30805300FBA804 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A10000192F40000100AAA001 /* Build configuration list for PBXNativeTarget "Compound InterestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000152F40000100AAA001 /* Debug */,
+				A10000162F40000100AAA001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A100001A2F40000100AAA001 /* Build configuration list for PBXNativeTarget "Compound InterestUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A10000172F40000100AAA001 /* Debug */,
+				A10000182F40000100AAA001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
