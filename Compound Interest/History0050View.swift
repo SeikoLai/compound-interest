@@ -375,55 +375,52 @@ struct StockHistoryListView: View {
                                     )
                                     .frame(width: annualCandleSize.width, height: annualCandleSize.height)
 
-                                    VStack(alignment: .leading, spacing: 4) {
+                                    VStack(alignment: .leading, spacing: 6) {
                                         Text(
                                             localizedFormat(
                                                 "history_annual_avg_line",
                                                 summary.averageClose.formatted(.number.precision(.fractionLength(2)))
                                             )
                                         )
-                                        HStack(alignment: .top, spacing: 12) {
-                                            HStack(spacing: 2) {
-                                                Text(
-                                                    localizedFormat(
-                                                        "history_annual_high_price",
-                                                        summary.high.formatted(.number.precision(.fractionLength(2)))
-                                                    )
-                                                )
-                                                Text(localizedFormat("history_date_suffix", summary.highDate))
-                                                    .font(.caption2.weight(.semibold))
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                                            HStack(spacing: 2) {
-                                                Text(
-                                                    localizedFormat(
-                                                        "history_annual_low_price",
-                                                        summary.low.formatted(.number.precision(.fractionLength(2)))
-                                                    )
-                                                )
-                                                Text(localizedFormat("history_date_suffix", summary.lowDate))
-                                                    .font(.caption2.weight(.semibold))
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
-                                        HStack(alignment: .top, spacing: 12) {
+                                        (
                                             Text(
                                                 localizedFormat(
-                                                    "history_annual_volume_line",
-                                                    summary.volume.formatted(.number.precision(.fractionLength(0)))
+                                                    "history_annual_high_price",
+                                                    summary.high.formatted(.number.precision(.fractionLength(2)))
                                                 )
+                                            ) +
+                                            Text(" ") +
+                                            Text(localizedFormat("history_date_suffix", summary.highDate))
+                                                .font(.subheadline.weight(.semibold))
+                                                .foregroundStyle(.secondary)
+                                        )
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                                        (
+                                            Text(
+                                                localizedFormat(
+                                                    "history_annual_low_price",
+                                                    summary.low.formatted(.number.precision(.fractionLength(2)))
+                                                )
+                                            ) +
+                                            Text(" ") +
+                                            Text(localizedFormat("history_date_suffix", summary.lowDate))
+                                                .font(.subheadline.weight(.semibold))
+                                                .foregroundStyle(.secondary)
+                                        )
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                                        Text(
+                                            localizedFormat(
+                                                "history_annual_volume_line",
+                                                summary.volume.formatted(.number.precision(.fractionLength(0)))
                                             )
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
+                                        )
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                     }
-                                    .font(.subheadline.weight(.bold))
+                                    .font(.headline.weight(.bold))
                                     .foregroundStyle(.primary)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.65)
-                                    .allowsTightening(true)
+                                    .lineLimit(nil)
                                 } else {
                                     Text(localizedFormat("history_year_data_count", "\(yearGroup.recordsCount)"))
                                         .font(.title3.bold())
